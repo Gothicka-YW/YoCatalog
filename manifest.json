@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "YoCatalog",
   "version": "2.0.0",
-  "description": "YoWorld fan tool: Screen Grab stitched crops from yoworld.info/template plus Avatars, Wish Lists, and Images libraries with uploads and BBCode.",
+  "description": "YoWorld Forums FanTool. Capture, Upload, Share YoWorld Images Easily. Lists, Avatars, Images, & Signatures.",
   "permissions": [
     "storage",
     "activeTab",
