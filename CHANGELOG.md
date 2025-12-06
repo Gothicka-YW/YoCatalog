@@ -1,5 +1,17 @@
 # YoCatalog Changelog
 
+## 2.0.0 - 2025-12-06
+Added:
+- **Signature builder (Images tab):** generate YoWorld-ready signatures with a one-click `[url=HOME][img]…[/img][/url]` snippet. Includes a named Home Link manager so you can save multiple YoWorld home URLs, copy them directly, and wrap any saved/uploaded image instantly.
+- **Support link:** Settings now includes a “Buy Me a Coffee” button for folks who want to tip.
+
+Changed:
+- **Velvet Red default theme:** refreshed the base palette plus added seasonal “Christmas Cheer” and “Valentine Velvet” theme options in Settings.
+- **Layout polish:** Lists tab “Save Title” field shrinks so buttons fit comfortably; Avatars filters are equal width to avoid clipping; Images tab gained dedicated Signature + Home Link sections without widening the popup.
+
+Fixed:
+- Signature copy button now honors disabled states so placeholder text is never copied.
+
 ## 1.5.2 - 2025-11-19
 Added:
 - Multi-Type Lists: Wish List (WL), Sale (S), and WTB types with sticky type selector when saving.

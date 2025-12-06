@@ -11,6 +11,7 @@ Full detailed guide: Open the popup → Home tab → "Open Help Guide" (file: Yo
 - Screen Grab: Capture clean stitched wishlist/template grids. Works ONLY on https://yoworld.info/template. Use Preview Template first, then set Limit and Export (crop). Auto-switch to Wish Lists (if enabled in Settings).
 - Wish Lists: Stage an image (paste / drag-drop / file), Upload (imgbb → catbox fallback), Save/Rename/Delete entries, copy URL or BBCode (with optional title).
 - Images: Separate image library (independent of Wish Lists). Same staging & upload flow; manage, copy, rename, delete.
+	- Includes a Signature builder: save multiple YoWorld home links, then wrap any uploaded image with `[url=HOME][img]...[/img][/url]` and copy it instantly.
 - Avatars: Catalog of avatar images with name, group, tags, description. Upload/replace image, search, filter (group, tags), sort, bulk select (delete/export), import/export JSON.
 - Settings: imgbb API key, caps, theme, header font, auto-switch toggle, Reset, Import/Export JSON backup, Privacy link.
 
@@ -18,6 +19,7 @@ Full detailed guide: Open the popup → Home tab → "Open Help Guide" (file: Yo
 - Capture & Share: Open template page → Preview Template → set Limit → Export (crop) → (auto) switch to Wish Lists → Upload → Copy URL/BBCode.
 - Add Avatar: Avatars tab → Select image (paste/drag-drop/file) → Upload → Fill name/group/tags/description → Save.
 - Manage Images: Images tab → Stage image → Upload → Save entry with title → Later copy URL/BBCode or Delete.
+- Build a Signature: Images tab → Stage/upload image → Pick or save a YoWorld home link → Copy the Signature BBCode to post on the forums.
 
 4) Upload Pipeline
 - Primary: imgbb (requires your API key).

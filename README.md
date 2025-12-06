@@ -5,7 +5,13 @@ Formerly "YoWishlist-50". Lists/Images/Avatars manager and Screen Grab tool for 
 This extension does not track you and only stores settings and saved entries in Chrome storage. Read the full policy here:
 - PRIVACY_POLICY: ./PRIVACY_POLICY.txt
 
-## What’s new (v1.5.2 — Unreleased)
+## What’s new (v2.0 — 2025-12-06)
+- **Signatures inside Images tab:** New Signature BBCode panel wraps any saved/uploaded image with a selected YoWorld home link (`[url=HOME][img]IMG[/img][/url]`) and copies it in one click.
+- **Home Link manager:** Save multiple named YoWorld home links, reuse them across signatures, copy them directly, and keep your last selection synced via chrome storage.
+- **Theme refresh:** Velvet Red becomes the default palette with two new seasonal themes (Christmas Cheer & Valentine Velvet) plus general layout polish (narrower Lists title field, even Avatars filters).
+- **Support button:** Settings gained a “Buy Me a Coffee” link for fans who want to tip.
+
+## What’s new (v1.5.2)
 - Screen Grab: Anchors previews/exports to the picked container, so the crop starts at the exact tile you clicked even on pages with multiple grids.
 - Persistence: Remembers last tab, `Limit`, and `Scope`. Lists title draft and Avatars field drafts (name/group/tags/desc) are restored if you close/reopen the popup.
 - Avatars UX: Duplicate-name upload now asks to replace the existing entry; clicking anywhere on a card toggles selection; preview moved below controls to avoid clipping.

@@ -117,6 +117,12 @@ Core actions are the same as Lists:
 - Stage → Upload → Save → Copy URL/BBCode → Rename/Delete.
 - Upload pipeline: imgbb primary → catbox fallback.
 
+### Signature Builder
+- Save multiple YoWorld home links with friendly names (e.g., "Forum Profile", "Alt Home").
+- Select a link to automatically wrap the current image URL as `[url=HOME][img]IMAGE[/img][/url]`.
+- Copy the generated Signature BBCode with a single click; button stays disabled until an image URL exists so you never copy placeholder text.
+- Need a quick home link? Type/paste it in the form, click “Save / Update”, and it’s available across sessions via chrome storage.
+
 [▶ Watch: Images Library — Coming soon]
 
 ---
