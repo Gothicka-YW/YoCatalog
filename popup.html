@@ -6,27 +6,27 @@
   <link rel="stylesheet" href="fonts/fonts.css" />
   <style>
       :root{
-        /* Default theme now: Autumn Leaf */
-        --bg:#F7F3EE; /* gradient start */
-        --bg-2:#ECE4DA; /* gradient end */
-        --fg:#332820;
-        --muted:#66594F;
-        --surface:#ECE4DA;
-        --surface-2:#E2D9CE;
-        --border:#D8CCBF;
-        --accent:#7C4F33;
+        /* Default theme now: Velvet Red */
+        --bg:#FDF2F4; /* gradient start */
+        --bg-2:#F6D9E0; /* gradient end */
+        --fg:#2B0F16;
+        --muted:#7B4B56;
+        --surface:#FFF7F9;
+        --surface-2:#F4E3E7;
+        --border:#E7C3CD;
+        --accent:#B5143F;
         --accent-contrast:#ffffff;
         --btn-bg: var(--accent);
-        --btn-bg-hover:#633f29;
-        --accent-ring: rgba(124,79,51,.30);
-        --btn-border:#4a2d1c;
+        --btn-bg-hover:#8F0F32;
+        --accent-ring: rgba(181,20,63,.32);
+        --btn-border:#700A21;
         --input-bg:#ffffff;
         --shadow:0 10px 24px rgba(0,0,0,.12),0 4px 10px rgba(0,0,0,.10);
-        --highlight:#C27A3C;
-        --metallic:#B4A79F;
-        --btn-grad-start:#9a6a4d;
-        --btn-grad-mid:#7C4F33;
-        --btn-grad-end:#4a2d1c;
+        --highlight:#FFB3C7;
+        --metallic:#C08A9A;
+        --btn-grad-start:#F16486;
+        --btn-grad-mid:#B5143F;
+        --btn-grad-end:#700A21;
         --popup-width:480px;
       }
       /* Themes */
@@ -41,6 +41,8 @@
   body.theme-autumn-leaf{ --bg:#F7F3EE; --fg:#332820; --muted:#66594F; --surface:#ECE4DA; --surface-2:#E2D9CE; --border:#D8CCBF; --accent:#7C4F33; --btn-bg-hover:#633f29; --btn-border:#4a2d1c; --input-bg:#ffffff; --accent-ring: rgba(124,79,51,.30); --btn-grad-start:#9a6a4d; --btn-grad-mid:#7C4F33; --btn-grad-end:#4a2d1c; --highlight:#C27A3C; }
   body.theme-espresso-cream{ --bg:#F5F1EC; --fg:#2F251F; --muted:#63564D; --surface:#E8E2DA; --surface-2:#DCD4CA; --border:#D5CCBF; --accent:#5A3F30; --btn-bg-hover:#462f24; --btn-border:#382418; --input-bg:#ffffff; --accent-ring: rgba(90,63,48,.32); --btn-grad-start:#7a5a48; --btn-grad-mid:#5A3F30; --btn-grad-end:#382418; --highlight:#A26F42; }
   body.theme-dark-graphite{ --bg:#1E1F22; --fg:#DFE3E7; --muted:#A4ADB5; --surface:#292B2F; --surface-2:#212327; --border:#3A3D42; --accent:#5F6E87; --btn-bg-hover:#4d5a70; --btn-border:#2f3848; --input-bg:#202226; --accent-ring: rgba(95,110,135,.32); --btn-grad-start:#7a89a3; --btn-grad-mid:#5F6E87; --btn-grad-end:#2f3848; --highlight:#4F89C3; }
+  body.theme-christmas{ --bg:#F8F6F0; --fg:#1F2B1F; --muted:#51604F; --surface:#F7F1E6; --surface-2:#EDE4D3; --border:#D6C9B5; --accent:#1C6B3D; --btn-bg-hover:#155332; --btn-border:#0f3c23; --input-bg:#ffffff; --accent-ring: rgba(28,107,61,.32); --btn-grad-start:#38A36D; --btn-grad-mid:#1C6B3D; --btn-grad-end:#0f3c23; --highlight:#C62828; }
+  body.theme-valentine{ --bg:#FFF5F8; --fg:#311018; --muted:#7A4A58; --surface:#FFEFF4; --surface-2:#FFD6E3; --border:#F5C2D2; --accent:#D7265E; --btn-bg-hover:#B01F4D; --btn-border:#7A1534; --input-bg:#ffffff; --accent-ring: rgba(215,38,94,.32); --btn-grad-start:#FF6B9E; --btn-grad-mid:#D7265E; --btn-grad-end:#7A1534; --highlight:#FFB3C8; }
 
       *{ box-sizing: border-box; }
       html, body{ margin:0; overflow:hidden; }
@@ -209,6 +211,7 @@
   .avatar-tags{ display:flex; flex-wrap:wrap; gap:4px; margin-top:2px; }
   .tag-chip{ background: var(--surface); border:1px solid var(--border); font-size:9.5px; padding:2px 5px; border-radius:12px; color: var(--muted); line-height:1.05; max-width:58px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .avatar-card input[type=checkbox]{ position:absolute; top:6px; left:6px; width:14px; height:14px; }
+  .av-filter-field{ flex:1 1 0%; min-width:0; width:100%; }
   /* Preview panel styling upgrades */
   #av-preview{ position:relative; }
   #av-preview-body{ display:flex; flex-direction:column; gap:8px; }
@@ -345,9 +348,9 @@
         </div>
       </div>
       <div class="row" style="display:flex; gap:6px; align-items:center">
-        <select id="av-group-filter" style="flex:0 0 140px; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--fg)"></select>
-        <input id="av-search" placeholder="Search name, tags, desc" style="flex:1; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--fg)" />
-        <select id="av-sort" style="flex:0 0 140px; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--fg)">
+        <select id="av-group-filter" class="av-filter-field" style="padding:6px 8px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--fg)"></select>
+        <input id="av-search" class="av-filter-field" placeholder="Search name, tags, desc" style="padding:6px 8px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--fg)" />
+        <select id="av-sort" class="av-filter-field" style="padding:6px 8px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--fg)">
           <option value="name">Name A–Z</option>
           <option value="updated">Recently Updated</option>
           <option value="created">Recently Added</option>
@@ -408,7 +411,7 @@
           <button id="btn-saved-delete" style="width:auto">Delete</button>
         </div>
         <div style="display:flex; gap:6px; margin-top:6px">
-          <input id="saved-title" placeholder="Save Title" style="flex:1; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background: var(--input-bg); color: var(--fg)" />
+          <input id="saved-title" placeholder="Save Title" style="flex:1 1 80%; max-width:80%; min-width:0; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background: var(--input-bg); color: var(--fg)" />
           <select id="saved-type" style="flex:0 0 120px; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background: var(--input-bg); color: var(--fg)">
             <option value="wish" selected>Wish List</option>
             <option value="sale">Sale</option>
@@ -506,6 +509,31 @@
         </div>
         <div id="images-no-image-hint" class="muted" style="display:none; margin-top:6px">No image URL — upload or attach an image first.</div>
       </div>
+      <div class="row" style="flex-direction:column; align-items:stretch">
+        <label>YoWorld Home Links</label>
+        <div style="display:flex; gap:6px; flex-wrap:wrap">
+          <select id="home-link-select" style="flex:1; min-width:0; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background: var(--input-bg); color: var(--fg)"></select>
+          <button id="home-link-copy" style="width:auto">Copy link</button>
+          <button id="home-link-delete" style="width:auto">Delete</button>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:6px; flex-wrap:wrap">
+          <input id="home-link-name" placeholder="Display name" style="flex:1; min-width:120px; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background: var(--input-bg); color: var(--fg)" />
+          <input id="home-link-url" placeholder="https://yoworld.com/..." style="flex:2; min-width:180px; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background: var(--input-bg); color: var(--fg)" />
+        </div>
+        <div style="display:flex; gap:6px; margin-top:6px; flex-wrap:wrap">
+          <button id="home-link-save" style="width:auto">Save / Update</button>
+          <button id="home-link-clear" style="width:auto">Clear form</button>
+        </div>
+        <div class="muted" style="margin-top:4px; font-size:11px">Save multiple homes, then select one to wrap your signature link.</div>
+      </div>
+      <div class="row" style="flex-direction:column; align-items:stretch">
+        <label>Signature BBCode</label>
+        <textarea id="images-signature-link" rows="2" readonly style="padding:6px 8px; border:1px solid var(--border); border-radius:8px; background: var(--input-bg); color: var(--fg)"></textarea>
+        <div style="display:flex; gap:6px; margin-top:6px">
+          <button id="images-btn-copy-signature" style="flex:1">Copy signature code</button>
+        </div>
+        <div class="muted" style="margin-top:4px; font-size:11px">Format: [url=YourHome][img]ImageURL[/img][/url]</div>
+      </div>
       <!-- Close view-images container (was missing) -->
       </div>
 
@@ -548,16 +576,18 @@
         <div class="row" style="flex-direction:column; align-items:stretch">
           <label>Theme</label>
             <select id="theme-select">
-              <option value="default">Autumn Leaf (Default)</option>
-              <option value="mist">Cool Mist</option>
+              <option value="default">Velvet Red (Default)</option>
               <option value="autumn-leaf">Autumn Leaf</option>
-              <option value="contrast">High Contrast</option>
+              <option value="christmas">Christmas Cheer</option>
+              <option value="mist">Cool Mist</option>
               <option value="dark-graphite">Dark Graphite</option>
               <option value="emerald">Emerald</option>
               <option value="espresso-cream">Espresso Cream</option>
               <option value="green-tea">Green Tea</option>
+              <option value="contrast">High Contrast</option>
               <option value="midnight">Midnight</option>
               <option value="slate-midnight">Slate Midnight</option>
+              <option value="valentine">Valentine Velvet</option>
               <option value="yo-pink">Yo Pink</option>
             </select>
         </div>
@@ -570,6 +600,9 @@
         <button id="btn-export-json" style="flex:1">Export JSON</button>
         <button id="btn-import-json" style="flex:1">Import JSON</button>
         <input id="import-file" type="file" accept="application/json" style="display:none" />
+      </div>
+      <div class="row" style="justify-content:center; margin:12px 0 0 0">
+        <button id="btn-buy-coffee" style="min-width:200px">Buy Me a Coffee</button>
       </div>
     </div>
   <p class="muted">Unofficial fan tool — not affiliated with YoWorld or Big Viking Games. Screen Grab works on yoworld.info/template. • <a href="https://github.com/Gothicka-YW/YoCatalog/blob/main/PRIVACY_POLICY.txt" target="_blank" rel="noopener noreferrer" style="color:inherit; text-decoration:underline">Privacy Policy</a></p>

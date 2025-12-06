@@ -33,9 +33,12 @@
     , imagesIncludeTitle: 'yl50_images_include_title'
     , savedTitleDraft: 'yl50_saved_title_draft'
     , avatarDraft: 'yl50_av_draft'
+    , homeLinks: 'yl50_home_links'
+    , homeLinkLast: 'yl50_home_link_last'
   };
   // Inline notice helper
   let __noticeTimer = null;
+  let __homeLinks = [];
   function showNotice(type, message, timeout=2500){
     try{
       const box = document.getElementById('notice');
@@ -52,7 +55,7 @@
       __noticeTimer = setTimeout(()=>{ box.style.display='none'; }, Math.max(1200, timeout|0));
     }catch{ try{ alert(String(message||'')); }catch{} }
   }
-  chrome.storage.sync.get({ yl50_limit:50, yl50_columns:5, yl50_scope_name:'', yl50_imgbb_key:'', yl50_theme:'default', yl50_auto_switch_share:true, yl50_header_font:'', yl50_saved_cap:'50', yl50_saved_entries:[], yl50_lastTab:'home', yl50_include_title:true, yl50_avatars:[], yl50_avatar_cap:'100', yl50_avatar_last:'', yl50_avatar_last_group:'', yl50_avatar_search:'', yl50_images_saved_entries:[], yl50_images_saved_last:'', yl50_images_include_title:true, yl50_saved_title_draft:'', yl50_av_draft:{} }, (res) => {
+  chrome.storage.sync.get({ yl50_limit:50, yl50_columns:5, yl50_scope_name:'', yl50_imgbb_key:'', yl50_theme:'default', yl50_auto_switch_share:true, yl50_header_font:'', yl50_saved_cap:'50', yl50_saved_entries:[], yl50_lastTab:'home', yl50_include_title:true, yl50_avatars:[], yl50_avatar_cap:'100', yl50_avatar_last:'', yl50_avatar_last_group:'', yl50_avatar_search:'', yl50_images_saved_entries:[], yl50_images_saved_last:'', yl50_images_include_title:true, yl50_saved_title_draft:'', yl50_av_draft:{}, yl50_home_links:[], yl50_home_link_last:'' }, (res) => {
     $('#limit').value = res.yl50_limit || 50;
     if (document.getElementById('columns')) document.getElementById('columns').value = res.yl50_columns || 5;
     $('#imgbb-key').value = res.yl50_imgbb_key || '';
@@ -73,6 +76,7 @@
   // Load avatars and render grid placeholder
   initAvatars(res.yl50_avatars || [], res.yl50_avatar_last || '', res.yl50_avatar_last_group || '', res.yl50_avatar_search || '');
   initImages(res.yl50_images_saved_entries || [], res.yl50_images_saved_last || '');
+  initHomeLinks(res.yl50_home_links || [], res.yl50_home_link_last || '');
     // Migration from legacy data if needed, then render
     maybeMigrateLegacy(() => {
       loadSavedEntries((entries)=> renderSavedSelect(entries));
@@ -466,6 +470,8 @@
           yl50_avatar_last: all[STORAGE_KEYS.avatarLast] || '',
           yl50_avatar_last_group: all[STORAGE_KEYS.avatarLastGroup] || 'all',
           yl50_avatar_search: all[STORAGE_KEYS.avatarSearch] || '',
+          yl50_home_links: all[STORAGE_KEYS.homeLinks] || [],
+          yl50_home_link_last: all[STORAGE_KEYS.homeLinkLast] || '',
           // Preferences & settings
           yl50_theme: all[STORAGE_KEYS.theme] || 'default',
           yl50_header_font: all[STORAGE_KEYS.headerFont] || '',
@@ -1147,6 +1153,7 @@
     const hint = document.getElementById('images-no-image-hint'); if(hint) hint.style.display = url ? 'none' : 'block';
     const btnUrl = document.getElementById('images-btn-copy-url'); if(btnUrl) btnUrl.disabled = !url;
     const btnForum = document.getElementById('images-btn-copy-forum'); if(btnForum) btnForum.disabled = !url;
+    updateSignaturePreview();
   }
   function imagesUpdatePreview(entry){
     const url = (entry && entry.url) || '';
@@ -1157,6 +1164,66 @@
   }
   function imagesStageDataUrl(dataUrl){ if(!dataUrl) return; const iu=document.getElementById('images-image-url'); const img=document.getElementById('images-image-preview'); if(iu){ iu.value=''; iu.dataset.dataUrl=dataUrl; } if(img){ img.src=dataUrl; img.style.display='block'; } imagesSetNoImageHint(); }
   function initImages(initial, last){ imagesRenderSelect(initial||[], last||''); imagesSetNoImageHint(); }
+
+  function sanitizeHomeLinks(list){
+    return (Array.isArray(list)? list : []).map(link => ({
+      id: String(link.id||__uuid()),
+      name: String(link.name||'').trim(),
+      url: String(link.url||'').trim(),
+      createdAt: Number(link.createdAt||Date.now()),
+      updatedAt: Number(link.updatedAt||link.createdAt||Date.now())
+    })).filter(link => !!link.url);
+  }
+  function initHomeLinks(initial, lastId){
+    __homeLinks = sanitizeHomeLinks(initial);
+    renderHomeLinkSelect(__homeLinks, lastId || '');
+  }
+  function renderHomeLinkSelect(list, lastId){
+    const select = document.getElementById('home-link-select'); if(!select) return;
+    const sorted = [...(list||[])].sort((a,b)=> (a.name||a.url||'').localeCompare(b.name||b.url||'', undefined, { sensitivity:'base' }));
+    select.innerHTML='';
+    const placeholder = document.createElement('option'); placeholder.value=''; placeholder.textContent = sorted.length ? 'Select home link…' : 'No saved home links'; select.appendChild(placeholder);
+    for (const link of sorted){
+      const opt=document.createElement('option'); opt.value=link.id; opt.textContent = link.name ? `${link.name} — ${link.url}` : link.url; opt.title = link.url; select.appendChild(opt);
+    }
+    const target = (lastId && sorted.some(l=> l.id===lastId)) ? lastId : '';
+    select.value = target;
+    if (target){
+      const active = sorted.find(l=> l.id===target);
+      if (active){
+        const nameEl = document.getElementById('home-link-name'); if(nameEl) nameEl.value = active.name || '';
+        const urlEl = document.getElementById('home-link-url'); if(urlEl) urlEl.value = active.url || '';
+      }
+    }
+    updateHomeLinkButtons();
+    updateSignaturePreview();
+  }
+  function updateHomeLinkButtons(){
+    const hasSelection = !!document.getElementById('home-link-select')?.value;
+    const del = document.getElementById('home-link-delete'); if(del) del.disabled = !hasSelection;
+    const urlTyped = (document.getElementById('home-link-url')?.value || '').trim();
+    const copy = document.getElementById('home-link-copy'); if(copy) copy.disabled = !hasSelection && !urlTyped;
+  }
+  function getActiveHomeLinkUrl(){
+    const select = document.getElementById('home-link-select');
+    const selectedId = select?.value || '';
+    if (selectedId){
+      const found = __homeLinks.find(l=> l.id===selectedId);
+      if (found && found.url) return found.url;
+    }
+    return (document.getElementById('home-link-url')?.value || '').trim();
+  }
+  function updateSignaturePreview(){
+    const sigEl = document.getElementById('images-signature-link'); if(!sigEl) return;
+    const imgUrl = (document.getElementById('images-image-url')?.value || '').trim();
+    const homeUrl = getActiveHomeLinkUrl();
+    let code = '';
+    if (!imgUrl){ code = 'Load or upload an image to build a signature.'; }
+    else if (homeUrl){ code = `[url=${homeUrl}][img]${imgUrl}[/img][/url]`; }
+    else { code = `[img]${imgUrl}[/img]`; }
+    sigEl.value = code;
+    const btn = document.getElementById('images-btn-copy-signature'); if(btn) btn.disabled = !imgUrl;
+  }
 
   // Images: file load
   if (document.getElementById('images-btn-load-file')){
@@ -1176,6 +1243,86 @@
     const items = (e.clipboardData && e.clipboardData.items) || [];
     for(const it of items){ if(it.kind==='file'){ const f=it.getAsFile(); if(f && f.type && f.type.startsWith('image/')){ const r=new FileReader(); r.onload=()=> imagesStageDataUrl(r.result); r.readAsDataURL(f); e.preventDefault(); break; } } }
   });
+  // Home links manager (Images tab)
+  const homeLinkUrlInput = document.getElementById('home-link-url');
+  if (homeLinkUrlInput){ homeLinkUrlInput.addEventListener('input', ()=>{ updateHomeLinkButtons(); updateSignaturePreview(); }); }
+  if (document.getElementById('home-link-select')){
+    document.getElementById('home-link-select').addEventListener('change', ()=>{
+      const id = document.getElementById('home-link-select').value;
+      if (id){
+        const found = __homeLinks.find(l=> l.id===id);
+        if (found){
+          const nameEl = document.getElementById('home-link-name'); if(nameEl) nameEl.value = found.name || '';
+          const urlEl = document.getElementById('home-link-url'); if(urlEl) urlEl.value = found.url || '';
+        }
+        chrome.storage.sync.set({ [STORAGE_KEYS.homeLinkLast]: id });
+      } else {
+        chrome.storage.sync.set({ [STORAGE_KEYS.homeLinkLast]: '' });
+      }
+      updateHomeLinkButtons();
+      updateSignaturePreview();
+    });
+  }
+  if (document.getElementById('home-link-save')){
+    document.getElementById('home-link-save').addEventListener('click', ()=>{
+      const name = (document.getElementById('home-link-name')?.value || '').trim();
+      const urlRaw = (document.getElementById('home-link-url')?.value || '').trim();
+      if (!urlRaw){ showNotice('error', 'Enter your YoWorld home link URL.'); return; }
+      if (!/^https?:\/\//i.test(urlRaw)){ showNotice('error', 'Home link must start with http:// or https://'); return; }
+      const select = document.getElementById('home-link-select');
+      const selectedId = select?.value || '';
+      const now = Date.now();
+      let next = [...__homeLinks];
+      if (selectedId){
+        const idx = next.findIndex(l=> l.id===selectedId);
+        if (idx >= 0){
+          next[idx] = { ...next[idx], name, url: urlRaw, updatedAt: now };
+        } else {
+          next.push({ id: selectedId, name, url: urlRaw, createdAt: now, updatedAt: now });
+        }
+      } else {
+        next.push({ id: __uuid(), name, url: urlRaw, createdAt: now, updatedAt: now });
+      }
+      __homeLinks = sanitizeHomeLinks(next);
+      const targetId = (selectedId && __homeLinks.some(l=> l.id===selectedId)) ? selectedId : (__homeLinks.slice(-1)[0]?.id || '');
+      chrome.storage.sync.set({ [STORAGE_KEYS.homeLinks]: __homeLinks, [STORAGE_KEYS.homeLinkLast]: targetId }, ()=>{
+        renderHomeLinkSelect(__homeLinks, targetId);
+        showNotice('success', selectedId ? 'Home link updated.' : 'Home link saved.');
+      });
+    });
+  }
+  if (document.getElementById('home-link-delete')){
+    document.getElementById('home-link-delete').addEventListener('click', ()=>{
+      const select = document.getElementById('home-link-select'); const id = select?.value || '';
+      if (!id){ showNotice('error', 'Select a home link to delete.'); return; }
+      if (!confirm('Delete this home link?')) return;
+      __homeLinks = __homeLinks.filter(l=> l.id !== id);
+      chrome.storage.sync.set({ [STORAGE_KEYS.homeLinks]: __homeLinks, [STORAGE_KEYS.homeLinkLast]: '' }, ()=>{
+        renderHomeLinkSelect(__homeLinks, '');
+        const nameEl = document.getElementById('home-link-name'); if(nameEl) nameEl.value='';
+        if (homeLinkUrlInput) homeLinkUrlInput.value='';
+        showNotice('success', 'Home link deleted.');
+      });
+    });
+  }
+  if (document.getElementById('home-link-clear')){
+    document.getElementById('home-link-clear').addEventListener('click', ()=>{
+      const select = document.getElementById('home-link-select'); if(select) select.value='';
+      const nameEl = document.getElementById('home-link-name'); if(nameEl) nameEl.value='';
+      if (homeLinkUrlInput) homeLinkUrlInput.value='';
+      chrome.storage.sync.set({ [STORAGE_KEYS.homeLinkLast]: '' });
+      updateHomeLinkButtons();
+      updateSignaturePreview();
+    });
+  }
+  if (document.getElementById('home-link-copy')){
+    document.getElementById('home-link-copy').addEventListener('click', ()=>{
+      const url = getActiveHomeLinkUrl();
+      if (!url){ showNotice('error', 'Enter or select a home link first.'); return; }
+      navigator.clipboard.writeText(url);
+      showNotice('success', 'Home link copied.');
+    });
+  }
   // Images: upload
   if (document.getElementById('images-btn-upload')){
     document.getElementById('images-btn-upload').addEventListener('click', async()=>{
@@ -1207,6 +1354,14 @@
   // Images: copy actions and include-title
   if (document.getElementById('images-btn-copy-url')) document.getElementById('images-btn-copy-url').addEventListener('click', ()=>{ const v=document.getElementById('images-image-url')?.value; if(v) navigator.clipboard.writeText(v); });
   if (document.getElementById('images-btn-copy-forum')) document.getElementById('images-btn-copy-forum').addEventListener('click', ()=>{ const v=document.getElementById('images-forum-link')?.value; if(v) navigator.clipboard.writeText(v); });
+  if (document.getElementById('images-btn-copy-signature')){
+    const sigBtn = document.getElementById('images-btn-copy-signature');
+    sigBtn.addEventListener('click', ()=>{
+      if (sigBtn.disabled) return;
+      const v = document.getElementById('images-signature-link')?.value;
+      if (v) navigator.clipboard.writeText(v);
+    });
+  }
   if (document.getElementById('images-include-title')) document.getElementById('images-include-title').addEventListener('change', ()=>{
     const include = !!document.getElementById('images-include-title').checked; chrome.storage.sync.set({ [STORAGE_KEYS.imagesIncludeTitle]: include }); const url=document.getElementById('images-image-url')?.value||''; const t=document.getElementById('images-saved-title')?.value||''; const fl=document.getElementById('images-forum-link'); if(fl){ fl.value = include ? makeForumLink(url, t) : `[img]${url}[/img]`; }
   });
@@ -1345,6 +1500,12 @@
       try { chrome.tabs.create({ url }); } catch { window.open(url, '_blank'); }
     });
   }
+  if (document.getElementById('btn-buy-coffee')){
+    document.getElementById('btn-buy-coffee').addEventListener('click', ()=>{
+      const url = 'https://buymeacoffee.com/ywpaint';
+      try { chrome.tabs.create({ url }); } catch { window.open(url, '_blank'); }
+    });
+  }
 
   // Resources: reset settings to defaults (lightweight)
   if (document.getElementById('btn-reset-settings')){
@@ -1361,7 +1522,9 @@
         STORAGE_KEYS.autoSwitchShare,
         STORAGE_KEYS.lastTab,
         STORAGE_KEYS.savedCap,
-        STORAGE_KEYS.migratedV2
+        STORAGE_KEYS.migratedV2,
+        STORAGE_KEYS.homeLinks,
+        STORAGE_KEYS.homeLinkLast
       ], ()=>{
         $('#limit').value = 50;
         if ($('#scope-name')) $('#scope-name').value = '';
@@ -1374,6 +1537,10 @@
         if ($('#saved-cap-select')) $('#saved-cap-select').value = '50';
         renderSavedSelect([]);
         setNoImageHint();
+        __homeLinks = [];
+        renderHomeLinkSelect([], '');
+        const hlName = document.getElementById('home-link-name'); if (hlName) hlName.value='';
+        const hlUrl = document.getElementById('home-link-url'); if (hlUrl) hlUrl.value='';
         showNotice('success', 'Settings reset.');
       });
     });
@@ -1383,7 +1550,8 @@
   function applyTheme(name){
     const cls = [
       'theme-midnight','theme-yo-pink','theme-emerald','theme-contrast',
-      'theme-mist','theme-green-tea','theme-slate-midnight','theme-autumn-leaf','theme-espresso-cream','theme-dark-graphite'
+      'theme-mist','theme-green-tea','theme-slate-midnight','theme-autumn-leaf','theme-espresso-cream','theme-dark-graphite',
+      'theme-christmas','theme-valentine'
     ];
     document.body.classList.remove(...cls);
     if (!name || name==='default') return;
@@ -1397,7 +1565,9 @@
       'slate-midnight':'theme-slate-midnight',
       'autumn-leaf':'theme-autumn-leaf',
       'espresso-cream':'theme-espresso-cream',
-      'dark-graphite':'theme-dark-graphite'
+      'dark-graphite':'theme-dark-graphite',
+      'christmas':'theme-christmas',
+      'valentine':'theme-valentine'
     };
     const clsName = map[name];
     if (clsName) document.body.classList.add(clsName);
@@ -1521,6 +1691,8 @@
           const avLast = String(obj.yl50_avatar_last || '');
           const avLastGroup = String(obj.yl50_avatar_last_group || 'all');
           const avSearch = String(obj.yl50_avatar_search || '');
+          const homeLinks = sanitizeHomeLinks(obj.yl50_home_links || []);
+          const homeLinkLast = String(obj.yl50_home_link_last || '');
 
           const theme = obj.yl50_theme || 'default';
           const headerFont = obj.yl50_header_font || '';
@@ -1553,6 +1725,8 @@
             [STORAGE_KEYS.avatarLast]: avLast,
             [STORAGE_KEYS.avatarLastGroup]: avLastGroup,
             [STORAGE_KEYS.avatarSearch]: avSearch,
+            [STORAGE_KEYS.homeLinks]: homeLinks,
+            [STORAGE_KEYS.homeLinkLast]: homeLinkLast,
             // Preferences & settings
             [STORAGE_KEYS.theme]: theme,
             [STORAGE_KEYS.headerFont]: headerFont,
@@ -1582,6 +1756,7 @@
             if (document.getElementById('images-include-title')) document.getElementById('images-include-title').checked = imgIncludeTitle;
             // Avatars
             initAvatars(avFinal, avLast, avLastGroup, avSearch);
+            initHomeLinks(homeLinks, homeLinkLast);
             const wlCount = Array.isArray(wlFinal) ? wlFinal.length : 0;
             const imgCount = Array.isArray(imgEntries) ? imgEntries.length : 0;
             const avCount = Array.isArray(avFinal) ? avFinal.length : 0;

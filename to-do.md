@@ -22,4 +22,6 @@
     - JSON round-trip works and doesn’t impact existing datasets.
     - Help Guide updated with a dedicated section and placeholder video link.
 
-Sample Signature Format: [url=https://yoworld.com/index.php?d=h108837847][img]https://i.ibb.co/HfQsRRcF/OQgt8gp-Imgur.png[/img][/url]
+Sample Signature Format: [url=HOME URL HERE][img]ImgBB LINK INSERTED HERE[/img][/url]
+
+Currently added this feature to the bottom of images - future plans may include 2 rows of tabs to include a solo Signatures tab.

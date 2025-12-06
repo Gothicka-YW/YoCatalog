@@ -3,8 +3,8 @@ Effective date: November 18, 2025
 
 Who we are
 YoCatalog (formerly "YoWishlist 50") is a free, open‑source Chrome extension that helps YoWorld users capture Screens, manage Lists and Images, and catalog Avatars. The project is maintained publicly on GitHub at:
-   https://github.com/Gothicka-YW/YoWishlist-50
-Note: The repository name may still reflect the prior project name.
+   https://github.com/Gothicka-YW/YoCatalog
+Note: The repository name has been changed to reflect the new repository name.
 
 This policy explains what data the extension accesses, stores, or transmits, and for what purpose.
 
@@ -61,4 +61,4 @@ Changes to this policy
 
 Contact
 If you have questions or requests regarding this policy, please open an issue on the project’s GitHub repository:
-   https://github.com/Gothicka-YW/YoWishlist-50
+   https://github.com/Gothicka-YW/YoCatalog
